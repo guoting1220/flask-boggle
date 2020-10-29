@@ -75,7 +75,7 @@ $(async function(){
 
   /* set timer when starting the game ============================= */
 
-  function setTimer(totalSecs = 10) {
+  function setTimer(totalSecs = 60) {
     $timerSec.text(totalSecs);  //60
     let count = totalSecs - 1;  // 59
     let timer = setInterval(async function () {
