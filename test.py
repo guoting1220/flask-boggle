@@ -6,10 +6,10 @@ from boggle import Boggle
 
 class FlaskTests(TestCase):
 
-    def setUp(self):
-        """ before each test"""
+    # def setUp(self):
+    #     """ before each test"""
 
-        app.config['TESTING'] = True  #?
+    #     app.config['TESTING'] = True  #?
 
     def test_show_board(self):
         """test if the html displays and informations stored in session"""
@@ -30,30 +30,35 @@ class FlaskTests(TestCase):
 
         with app.test_client() as client:
             with client.session_transaction() as change_session:
-                change_session['board'] = [["s", "x", "x", "x", "x"],
-                                           ["i", "x", "x", "x", "x"],
-                                           ["x", "x", "x", "x", "x"],
-                                           ["x", "x", "x", "x", "x"],
-                                           ["x", "x", "x", "x", "x"]]
-                response = client.get("/check-word?word=six")
-            
-                self.assertEqual(response.status_code, 200)
-                self.assertEqual(response.data.result, "ok")
-                # self.assertEqual(response.json['result'], 'ok')
+                change_session['board'] = [["S", "X", "X", "X", "X"],
+                                           ["I", "X", "X", "X", "X"],
+                                           ["X", "X", "X", "X", "X"],
+                                           ["X", "X", "X", "X", "X"],
+                                           ["X", "X", "X", "X", "X"]]
+            # indentation!!!!!
+            response = client.get("/check-word?word=six")            
+            self.assertEqual(response.status_code, 200)
+            # self.assertEqual(response.data.result, "ok")  // not working
+            self.assertEqual(response.json['result'], 'ok')
+            # self.assertEqual(response.get_json()['result'], 'ok') also work
 
            
-    # def test_invalid_word(self):
-    #     """Test if word is in the dictionary"""
+    def test_invalid_word(self):
+        """Test if word is in the dictionary"""
 
-    #     with app.test_client() as client:
-    #         response = client.get('/check-word?word=impossible')
-    #         self.assertEqual(response.json['result'], 'not-on-board')
+        with app.test_client() as client:
+            client.get('/')
+            # this test uses the real board?
+            # hwo can we guarantee no "impossible" on the board?
+            response = client.get('/check-word?word=impossible')
+            self.assertEqual(response.json['result'], 'not-on-board')
 
 
-    # def non_english_word(self):
-    #     """Test if word is on the board"""
+    def non_english_word(self):
+        """Test if word is on the board"""
 
-    #     with app.test_client() as client:            
-    #         response = client.get(
-    #             '/check-word?word=fsjdakfkldsfjdslkfjdlksf')
-    #         self.assertEqual(response.json['result'], 'not-word')
+        with app.test_client() as client: 
+            client.get('/')
+            response = client.get(
+                '/check-word?word=fsjdakfkldsfjdslkfjdlksf')
+            self.assertEqual(response.json['result'], 'not-word')
